@@ -1,23 +1,47 @@
 'use client'
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
+import { toast } from 'react-toastify'
 
 export default function login() {
+    const router = useRouter();
     const [user, setUser] = useState({
      
-        emil: '',
-        passward: '',
+        email: '',
+        password: '',
     });
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const onlogin = async () => {
-        // Implement your signup logic here
-    };
+        try {
+            setLoading(true);
+            const response = await axios.post("/api/login", user);
+            console.log("Signup success", response.data);
+            router.push("/profile");
+            
+        } catch (error:any) {
+            console.log("Signup failed", error.message);
+            
+            toast.error(error.message);
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if(user.email.length > 0 && user.password.length > 0 ) {
+            setButtonDisabled(false);
+        } else {
+            setButtonDisabled(true);
+        }
+    }, [user]);
 
     return (
         <div className="flex flex-col items-center mt-8">
-            <h1 className="text-2xl font-bold">login</h1>
+        <h1 className="text-2xl font-bold">{loading ? 'procesing' : 'login'}</h1>
 
             <hr className="w-full my-4" />
 
@@ -31,19 +55,19 @@ export default function login() {
                     id="email"
                     type="email"
                     placeholder="Email"
-                    value={user.emil}
-                    onChange={(e) => setUser({ ...user, emil: e.target.value })}
+                    value={user.email}
+                    onChange={(e) => setUser({ ...user, email: e.target.value })}
                     className="w-full px-4 py-2 mb-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
 
                 <label htmlFor="password" className="block mb-1 font-medium text-gray-700">
-                    Password
+                    password
                 </label>
                 <input
                    type="email" id="email" name="email"
-                    placeholder="Password"
-                    value={user.passward}
-                    onChange={(e) => setUser({ ...user, passward: e.target.value })}
+                    placeholder="password"
+                    value={user.password}
+                    onChange={(e) => setUser({ ...user, password: e.target.value })}
                     className="w-full px-4 py-2 mb-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
 
