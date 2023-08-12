@@ -1,38 +1,35 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // Correct import path
 import axios from 'axios';
 import Link from 'next/link';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 
-export default function login() {
+export default function Login() { // Capitalized component name
     const router = useRouter();
     const [user, setUser] = useState({
-     
         email: '',
         password: '',
     });
-    const [buttonDisabled, setButtonDisabled] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false); // Correct usage of useState
+    const [loading, setLoading] = useState(false); // Correct usage of useState
 
-    const onlogin = async () => {
+    const onLogin = async () => { // Renamed function to onLogin
         try {
             setLoading(true);
             const response = await axios.post("/api/login", user);
-            console.log("Signup success", response.data);
+            console.log("Login success", response.data);
             router.push("/profile");
-            
         } catch (error:any) {
-            console.log("Signup failed", error.message);
-            
+            console.log("Login failed", error.message);
             toast.error(error.message);
-        }finally {
+        } finally {
             setLoading(false);
         }
     }
 
     useEffect(() => {
-        if(user.email.length > 0 && user.password.length > 0 ) {
+        if (user.email.length > 0 && user.password.length > 0) {
             setButtonDisabled(false);
         } else {
             setButtonDisabled(true);
@@ -72,7 +69,7 @@ export default function login() {
                 />
 
                 <button
-                    onClick={onlogin}
+                    onClick={onLogin}
                     className="w-full px-4 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none"
                 >
                     Sign Up
@@ -81,7 +78,7 @@ export default function login() {
 
             <hr className="w-full my-4" />
 
-            <Link href="siginup" className="text-blue-500 hover:underline">
+            <Link href="signup" className="text-blue-500 hover:underline">
                 Not registered? signup in here
             </Link>
         </div>
